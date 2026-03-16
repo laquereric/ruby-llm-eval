@@ -8,6 +8,7 @@ module RubyLLM
         @block = block
         @code_based = Grader::CodeBased.new
         @model_based = Grader::ModelBased.new
+        @grader_cache = {}
       end
 
       def run(suite)
@@ -113,6 +114,10 @@ module RubyLLM
       end
 
       def grader_for(type)
+        grader_class = Grader::Registry.fetch(type)
+        @grader_cache[grader_class] ||= grader_class.new
+      rescue Error
+        # Fallback for unregistered types
         case type
         when :llm_judge then @model_based
         else @code_based
