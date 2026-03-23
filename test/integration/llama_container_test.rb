@@ -63,7 +63,7 @@ class LlamaContainerBasicCapabilityTest < Minitest::Test
     suite = RubyLLM::Eval::Suite.define("llama-instructions") do
       scenario "yes or no answer" do
         input "Answer with only the word YES or NO. Is the sky blue during a clear day?"
-        grader :response_includes, pattern: /\byes\b/i
+        grader :response_includes, pattern: /\A\s*(yes|no)\s*\z/i
       end
     end
 
@@ -186,7 +186,7 @@ class LlamaContainerReportTest < Minitest::Test
     report = RubyLLM::Eval::Report.new(result)
     markdown = report.to_markdown
 
-    assert_includes markdown, "markdown check"
     assert_includes markdown, "llama-markdown"
+    assert_includes markdown, "Pass Rate"
   end
 end
