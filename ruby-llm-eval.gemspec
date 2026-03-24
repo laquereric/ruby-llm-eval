@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
                         "multi-trial execution, code-based and model-based graders, " \
                         "pass@k/pass^k metrics, baseline regression detection, and " \
                         "CI-friendly reporting (JSON, Markdown, JUnit XML)."
-  spec.homepage      = "https://github.com/vvhq/ruby-llm-eval"
+  spec.homepage      = "https://github.com/laquereric/ruby-llm-eval"
   spec.license       = "MIT"
 
   spec.required_ruby_version = ">= 3.1.0"
@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.metadata["homepage_uri"]    = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"]   = "#{spec.homepage}/blob/main/CHANGELOG.md"
+  spec.metadata["upstream_uri"]    = "https://github.com/crmne/ruby_llm"
 end

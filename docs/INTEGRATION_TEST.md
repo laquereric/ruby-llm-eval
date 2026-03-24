@@ -2,6 +2,23 @@
 
 The integration tests in `test/integration/` run behavioral evals against a locally-hosted Llama-3.2-1B-Instruct model served by [laquereric/llama-1b-container](https://github.com/laquereric/llama-1b-container). They use the same `ruby-llm-eval` framework as the unit specs, but call a real model over HTTP instead of using test doubles.
 
+## Upstream dependencies
+
+`ruby-llm-eval` is a clean extension of [crmne/ruby_llm](https://github.com/crmne/ruby_llm). It adds no monkey-patches and requires no changes to `ruby_llm` itself — it consumes the public `RubyLLM::` namespace and builds the eval harness on top.
+
+| Dependency | Source | Role |
+|---|---|---|
+| [crmne/ruby_llm](https://github.com/crmne/ruby_llm) | `Gemfile` (GitHub), gemspec runtime dep | LLM provider abstraction; agents, chat, tool-call interfaces |
+| [laquereric/llama-1b-container](https://github.com/laquereric/llama-1b-container) | cloned into `test/llama-3.2-1b-container/` | Local Llama-3.2-1B-Instruct server for integration tests |
+
+The `Gemfile` pins `ruby_llm` directly to the GitHub source so development always tracks the canonical upstream:
+
+```ruby
+gem "ruby_llm", github: "crmne/ruby_llm", branch: "main"
+```
+
+The gemspec declares the looser rubygems constraint (`>= 1.0`) so published releases of `ruby-llm-eval` are compatible with any stable `ruby_llm` release.
+
 ## Prerequisites
 
 - Apple Silicon Mac (M1/M2/M3/M4)
