@@ -49,6 +49,9 @@ module RubyLLM
 
       def build
         raise Error, "Scenario '#{@name}' must have an input" unless @input
+        unless @input.is_a?(String) || @input.is_a?(ContextRecord::Record)
+          raise Error, "Scenario '#{@name}' input must be a String or ContextRecord::Record"
+        end
         raise Error, "Scenario '#{@name}' must have at least one grader" if @graders.empty?
 
         Scenario.new(

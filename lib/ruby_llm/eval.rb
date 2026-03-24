@@ -16,6 +16,7 @@ require_relative "eval/runner"
 require_relative "eval/metrics"
 require_relative "eval/baseline"
 require_relative "eval/report"
+require_relative "eval/context_record_integration"
 
 module RubyLLM
   module Eval

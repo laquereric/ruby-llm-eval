@@ -59,11 +59,12 @@ module RubyLLM
       end
 
       def execute_agent(input)
+        str_input = ContextRecordIntegration::ScenarioInputHelper.extract_string(input)
         transcript = Transcript.new
-        transcript.add(role: :user, content: input)
+        transcript.add(role: :user, content: str_input)
 
         if @agent
-          response = execute_ruby_llm_agent(input, transcript)
+          response = execute_ruby_llm_agent(str_input, transcript)
           transcript.add(
             role: :assistant,
             content: response_content(response),
@@ -71,7 +72,7 @@ module RubyLLM
             tokens: extract_tokens(response)
           )
         elsif @block
-          result = @block.call(input)
+          result = @block.call(str_input)
           apply_block_result(transcript, result)
         else
           raise Error, "No agent or block provided to runner"
