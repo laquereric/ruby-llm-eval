@@ -73,10 +73,30 @@ module RubyLLM
       end
 
       module EvalResultMethods
+        # Convert eval result to a ContextRecord with ontology references.
+        #
+        # If the scenario carries a :tested_property tag (set by
+        # OntologyScenarioGenerator), the resulting Record includes
+        # vv:testedProperty in metadata — linking the eval result back
+        # to the ontology property under test.
+        #
+        # @return [ContextRecord::Record]
         def to_context_record
+          meta = {
+            "suite_name"    => @suite_name,
+            "scenario_name" => @scenario_name
+          }
+
+          # Attach ontology references when available from scenario tags
+          if defined?(@scenario) && @scenario.respond_to?(:tags)
+            tested_prop = @scenario.tags.find { |t| t.to_s.start_with?("tested:") }
+            meta["vv:testedProperty"] = tested_prop.to_s.sub("tested:", "") if tested_prop
+          end
+
           ContextRecord::Record.new(
-            action:  :evaluate,
-            target:  "eval_result/#{@suite_name}/#{@scenario_name}",
+            action:   :evaluate,
+            target:   "eval_result/#{@suite_name}/#{@scenario_name}",
+            rdf_type: "vv:EvalResult",
             payload: {
               "status"          => ContextRecord::ContextPrimitive.new(type: "vv:EvalResult", value: status.to_s),
               "trial_count"     => ContextRecord::ContextPrimitive.new(type: "vv:EvalResult", value: trial_count),
@@ -85,10 +105,7 @@ module RubyLLM
               "pass_rate"       => ContextRecord::ContextPrimitive.new(type: "vv:EvalResult", value: pass_rate.round(4)),
               "avg_duration_ms" => ContextRecord::ContextPrimitive.new(type: "vv:EvalResult", value: avg_duration_ms.round(1))
             },
-            metadata: {
-              "suite_name"    => @suite_name,
-              "scenario_name" => @scenario_name
-            }
+            metadata: meta
           )
         end
       end
